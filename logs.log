@@ -1,0 +1,359 @@
+fileName: Sessões de Log
+sheetInfo: true
+allowViewOnBrowser: false
+fileFormat: CSV
+sheets:
+# Esta eh a Planilha 1    LOG DE SESSAO      
+    - name: sheet1
+      label: Header
+      dateSplitQueryMinutes: 60
+      cols: 
+        - name: ID Respondedor
+          width: 0
+          align: Center
+          
+        - name: Respondedor
+          width: 0
+          align: Center
+          
+        - name: ID Canal
+          width: 0
+          align: Center
+          
+        - name: Canal
+          width: 0
+          align: Center
+          
+        - name: ID Origem
+          width: 0
+          align: Center
+          
+        - name: Origem
+          width: 0
+          align: Center
+          
+        - name: ID Audiência
+          width: 0
+          align: Center
+          
+        - name: Audiência
+          width: 0
+          align: Center
+
+        - name: ID Chave Chat
+          width: 0
+          align: Center
+          
+        - name: NR_Interacoes
+          width: 0
+          align: Center
+
+        - name: Data e Hora de Início
+          width: 0
+          align: Center
+          format: dd/MM/yyyy HH:mm:ss
+
+        - name: Data e Hora de Fechamento
+          width: 0
+          align: Center
+          format: dd/MM/yyyy HH:mm:ss
+
+        - name: Nome do Cliente
+          width: 0
+          align: Left
+
+        - name: ID do Cliente
+          width: 0
+          align: Center
+
+        - name: E-Mail
+          width: 0
+          align: Left
+
+        - name: CPF
+          width: 0
+          align: Left
+
+        - name: Transferido
+          width: 0
+          align: Center
+
+
+        - name: Pergunta Chave
+          width: 0
+          align: Left
+          
+        - name: Pergunta1
+          width: 0
+          align: Left
+          
+        - name: Pergunta2
+          width: 0
+          align: Left
+          
+        - name: Pergunta3
+          width: 0
+          align: Left
+          
+        - name: Pergunta4
+          width: 0
+          align: Left
+          
+        - name: Pergunta5
+          width: 0
+          align: Left
+          
+        - name: Pergunta6
+          width: 0
+          align: Left
+          
+        - name: Pergunta7
+          width: 0
+          align: Left
+          
+        - name: Pergunta8
+          width: 0
+          align: Left
+          
+        - name: Pergunta9
+          width: 0
+          align: Left
+          
+        - name: Custom1
+          width: 0
+          align: Left
+
+        - name: Custom2
+          width: 0
+          align: Left
+
+        - name: Custom3
+          width: 0
+          align: Left
+
+        - name: Custom4
+          width: 0
+          align: Left
+
+        - name: Custom5
+          width: 0
+          align: Left
+          profiles: [ROLE_SYSTEM_ADMIN, ROLE_ADMIN]
+
+        - name: Custom6
+          width: 0
+          align: Left
+          profiles: [ROLE_SYSTEM_ADMIN, ROLE_ADMIN]
+
+        - name: Custom7
+          width: 0
+          align: Left
+          profiles: [ROLE_SYSTEM_ADMIN, ROLE_ADMIN]
+
+        - name: Custom8
+          width: 0
+          align: Left
+          profiles: [ROLE_SYSTEM_ADMIN, ROLE_ADMIN]
+
+        - name: Custom9
+          width: 0
+          align: Left
+          profiles: [ROLE_SYSTEM_ADMIN, ROLE_ADMIN]
+
+        - name: Custom10
+          width: 0
+          align: Left
+          profiles: [ROLE_SYSTEM_ADMIN, ROLE_ADMIN]
+
+        - name: Browser
+          width: 0
+          align: Left
+          
+        - name: Versão Browser
+          width: 0
+          align: Left
+
+        - name: IP
+          width: 0
+          align: Left
+          
+        - name: Finalizado Timeout
+          width: 0
+          align: Center
+          profiles: [ROLE_SYSTEM_ADMIN]
+          
+        - name: Finalizado Job
+          width: 0
+          align: Left
+          profiles: [ROLE_SYSTEM_ADMIN]
+          
+      sql: |
+          select 
+            a.ID_RESPONDEDOR, r.DS_NOME, a.FK_ID_CHANNEL, c.DS_CHANNEL, a.FK_ID_SOURCE, s.DS_SOURCE, a.FK_ID_TARGET, t.DS_TARGET,
+            a.chaveChat,
+            a.NR_Interacoes,
+            a.DataInicio,
+            a.DataFechamento,
+            a.Nome,
+            a.IdCliente, 
+            a.email, 
+            a.cpf, 
+            a.Transferido,
+            a.PERGUNTACHAVE,
+            a.PERGUNTA1,
+            a.PERGUNTA2,
+            a.PERGUNTA3,
+            a.PERGUNTA4,
+            a.PERGUNTA5,
+            a.PERGUNTA6,
+            a.PERGUNTA7,
+            a.PERGUNTA8,
+            a.PERGUNTA9,
+            a.Custom1,
+            a.Custom2,
+            a.Custom3,
+            a.Custom4,
+            a.Custom5,
+            a.Custom6,
+            a.Custom7,
+            a.Custom8,
+            a.Custom9,
+            a.Custom10,
+            a.Browser,
+            a.VersaoBrowser,
+            a.IP,
+            a.FinalizadoTimeoutADM,
+            a.FinalizadoJobADM
+            from (
+                      Select s.ID_Respondedor ID_RESPONDEDOR,
+                             s.FK_ID_Channel FK_ID_CHANNEL,
+                             s.FK_ID_Source  FK_ID_SOURCE,
+                             s.FK_ID_Target  FK_ID_TARGET,
+                             s.Chave_Chat chaveChat,
+                             s.INTERACT_COUNT NR_Interacoes,
+                             s.Data_Inicio_Chat DataInicio,
+                             s.Data_Fechamento DataFechamento,
+                             s.Nome,
+                             s.Id_Cliente IdCliente, 
+                             s.email email, 
+                             s.cpf cpf, 
+                             s.Redirecionou_Operador_Humano Transferido,
+                             s.PERGUNTACHAVE,
+                             s.PERGUNTA1,
+                             s.PERGUNTA2,
+                             s.PERGUNTA3,
+                             s.PERGUNTA4,
+                             s.PERGUNTA5,
+                             s.PERGUNTA6,
+                             s.PERGUNTA7,
+                             s.PERGUNTA8,
+                             s.PERGUNTA9,
+                             s.DS_Custom1   Custom1,
+                             s.DS_Custom2   Custom2,
+                             s.DS_Custom3   Custom3,
+                             s.DS_Custom4   Custom4,
+                             s.DS_Custom5   Custom5,
+                             s.DS_Custom6   Custom6,
+                             s.DS_Custom7   Custom7,
+                             s.DS_Custom8   Custom8,
+                             s.DS_Custom9   Custom9,
+                             s.DS_Custom10  Custom10,
+                             s.DS_Browser Browser,
+                             s.DS_Browser_Version VersaoBrowser,
+                             s.DS_IP IP,
+                             s.B_Finalizado_Timeout FinalizadoTimeoutADM,
+                             s.B_Finalizado_Job FinalizadoJobADM
+                      From TB_Sessao_Chat s
+                      where 
+                          --{method:'between', field:'s.Data_Inicio_chat', param:'interval', timeLimits:false, and:false}
+                          --{method:'in', field:'s.ID_RESPONDEDOR', param:'respondersIds', and:true}
+                          --{method:'in', field:'s.FK_ID_SOURCE', param:'sourcesIds', and:true}
+                          --{method:'in', field:'s.FK_ID_TARGET', param:'targetsIds', and:true}
+                          --{method:'in', field:'s.FK_ID_CHANNEL', param:'channelsIds', and:true}
+                     
+          ) a 
+          left join MV_TB_RESPONDEDOR r on r.ID_RESPONDEDOR = a.ID_RESPONDEDOR
+          left join MV_TB_CHANNEL c on c.ID_CHANNEL = a.FK_ID_CHANNEL
+          left join MV_TB_SOURCE s on s.ID_SOURCE = a.FK_ID_SOURCE
+          left join MV_TB_TARGET t on t.ID_TARGET = a.FK_ID_TARGET   
+          order by a.chavechat       
+          
+# Esta eh a Planilha 2 - LOG ATENDIMENTO
+    - name: sheet2
+      label: Log
+      dateSplitQueryMinutes: 60
+      cols: 
+        - name: ID Respondedor
+          width: 0
+          align: Center
+          
+        - name: ID Chave Chat
+          width: 0
+          align: Center
+          
+        - name: ID Log
+          width: 0
+          align: Center
+    
+        - name: Data e Hora Mensagem
+          width: 0
+          align: Center
+          format: dd/MM/yyyy HH:mm:ss
+            
+        - name: ID Mensagem
+          width: 0
+          align: Center
+          
+        - name: Mensagem do AVI
+          width: 15000
+          align: Left
+            
+        - name: Mensagem do AVI Simples
+          width: 15000
+          align: Left
+            
+        - name: Mensagem do Usuário Compilada
+          width: 10000
+          align: Left
+          profiles: [ROLE_SYSTEM_ADMIN, ROLE_ADMIN]
+          
+        - name: Mensagem Usuário
+          width: 10000
+          align: Left
+            
+        - name: Árvore de Conhecimento
+          width: 0
+          align: Left
+
+        - name: Nota da Avaliação
+          width: 0
+          align: Center
+            
+        - name: Comentário da Avaliação
+          width: 10000
+          align: Left
+          
+      sql: |
+          select a.* from (select 
+          s.ID_Respondedor ID_RESPONDEDOR,
+          l.Chave_Chat chaveChat,
+          l.ID_Log idLog,
+          Data_Pergunta DataMensagem,
+          l.Id_Resposta IdMensagem,
+          l.Resposta  MensagemAVI,
+          l.Resposta_NaoFormatada MensagemAVISimples,
+          l.DS_Pergunta_Compilada MensagemUsuarioCompiladaKBM,
+          l.Pergunta  MensagemUsuario,
+          l.DS_Arvore_Conhecimento ArvoreConhecimento,
+          l.NR_Avaliacao NotaAvaliacao,
+          l.DS_Obs_Avaliacao ComentarioAvaliacao
+          From tb_log_chat l, tb_sessao_chat s
+          where 
+            l.chave_chat = s.chave_chat
+            and l.id_respondedor = s.id_respondedor
+            --{method:'between', field:'s.Data_Inicio_chat', param:'interval', timeLimits:false, and:true}
+            --{method:'in', field:'s.ID_RESPONDEDOR', param:'respondersIds', and:true}
+            --{method:'in', field:'s.FK_ID_SOURCE', param:'sourcesIds', and:true}
+            --{method:'in', field:'s.FK_ID_TARGET', param:'targetsIds', and:true}
+            --{method:'in', field:'s.FK_ID_CHANNEL', param:'channelsIds', and:true}
+          ) a order by a.Id_Respondedor, a.Chavechat, a.DataMensagem
