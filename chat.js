@@ -1,5 +1,10 @@
 const Watson = require('ibm-watson/assistant/v2');
 const speech2text = require('ibm-watson/speech-to-text/v1');
+const TextToSpeechV1 = require('ibm-watson/text-to-speech/v1');
+const TextToSpeechV2 = require('watson-developer-cloud/text-to-speech/v1');
+const { IamAuthenticator } = require('ibm-watson/auth');
+const fs = require('fs');
+const getStat = require('util').promisify(fs.stat);
 
 let assistant;
 let session;
@@ -12,17 +17,16 @@ exports.send = async function (texto, session) {
 
 exports.createSession = async () => {
 
-
   this.assistant = new Watson({
     version: "2019-02-28",
-    iam_apikey: "aKRdcmQRP0uPo9DArPF27Bz6YU8tq_Zv7EsJl7pkoGGk",
+    authenticator: new IamAuthenticator({
+      apikey: '0VMqKbjfF3D9V-hi18yyklFF48G1plRuz3-6D0XPxfz-',
+    }),
     url: "https://gateway.watsonplatform.net/assistant/api"
   });
 
-  // return { session_id: 'e9016886-9358-4840-ad32-b083d2a88ee4' };
-
   var session = await this.assistant.createSession({
-    assistant_id: "d2d8036d-9aed-48ae-9338-b446506a0589"
+    assistantId: "8ba7f971-f5a3-4ef8-ba49-144dbe2276fa"
   }).then(async res => {
     return res;
   }).catch(err => {
@@ -33,18 +37,18 @@ exports.createSession = async () => {
 };
 
 exports.message = async (texto, session) => {
+  let s = session.result.session_id;
 
   var response = await this.assistant.message({
-    assistant_id: "d2d8036d-9aed-48ae-9338-b446506a0589",
-    session_id: session.session_id,
+    assistantId: "8ba7f971-f5a3-4ef8-ba49-144dbe2276fa",
+    sessionId: s,
     input: { message_type: 'text', text: texto },
   }).then(res => {
-    // console.log("chegou aqui: ", res.output.generic[0].text)
 
     return {
-      msg: res.output.generic[0].text,
-      intencao: (typeof res.output.intents[0] === "undefined") ? "Confuso" : res.output.intents[0].intent,
-      sessao: session.session_id
+      msg: res.result.output.generic[0].text,
+      intencao: (typeof res.result.output.intents[0] === "undefined") ? "Confuso" : res.result.output.intents[0].intent,
+      sessao: s
     };
   }).catch(err => {
     console.log(err);
@@ -56,42 +60,85 @@ exports.audio = async (audio) => {
 
   // return "req.body";
   const config = {
-    "apikey": "8Cg4ujjEqqDc6FxN8vZ7cUmXIpHktQYZ2DZ6nJK7sSN8",
-    "iam_apikey_description": "Auto-generated for key ce31d09a-45e8-49c4-9695-968db470df3e",
+    "apikey": "EF9GMHwCHjMJqbQXhMpN4Vl_NUqVmJ0mwiZQXIc2uR-Y",
+    "iam_apikey_description": "Auto-generated for key 26a24639-d405-477f-8287-169ee22adcd9",
     "iam_apikey_name": "Auto-generated service credentials",
     "iam_role_crn": "crn:v1:bluemix:public:iam::::serviceRole:Manager",
-    "iam_serviceid_crn": "crn:v1:bluemix:public:iam-identity::a/c244d66069134bfabde25aba79ab87bb::serviceid:ServiceId-71f625b3-10d3-40b4-8a8b-2a0c2a2c453a",
+    "iam_serviceid_crn": "crn:v1:bluemix:public:iam-identity::a/f13576b1146a4f73b5e0bf903c605715::serviceid:ServiceId-3c9b1531-d304-4200-8af1-b157e79580f7",
     "url": "https://stream.watsonplatform.net/speech-to-text/api"
+
   };
 
   let speechToText = new speech2text({
-    iam_apikey: config.apikey,
+    authenticator: new IamAuthenticator({
+      apikey: config.apikey,
+    }),
     url: config.url,
     disable_ssl_verification: true,
   });
-
+  // return console.log(audio)
   let params = {
-    "audio": audio.data,
-    "content_type": audio.mimetype,
-    "transfer_encoding": 'chunked',
-    "model": "pt-BR_BroadbandModel",
+    audio: audio.data,
+    contentType: 'audio/ogg',
+    wordAlternativesThreshold: 0.9,
+    keywords: ['colorado', 'tornado', 'tornadoes'],
+    keywordsThreshold: 0.5,
+    transfer_encoding: 'chunked',
+    continuous: true,
+    model: "pt-BR_NarrowbandModel",
   }
 
-  // console.log(params.audio)
-  // return res.json({"msg": "OK"});
   return await speechToText.recognize(params)
     .then(result => {
-      console.log(JSON.stringify(result));
+      // console.log(JSON.stringify(result));
       return (result);
     })
     .catch(err => {
       console.log('error:', err);
-      return { "msg": "OK" };
+      return;//{ "msg": "OK" };
     });
 }
 
 
-exports.s2t = async(audio) => {
+exports.s2t = async (audio) => {
   let dados = await this.audio(audio);
-  return dados.results[0].alternatives[0].transcript
+  console.log('Audio: ', JSON.stringify(dados.result))
+  if (typeof dados === "undefined" || (dados.result).length == 0)
+    return "Não entendi"
+
+  return dados.result.results[0].alternatives[0].transcript
+}
+
+exports.t2s = async (texto) => {
+  // const textToSpeech = new TextToSpeechV1({
+  //   authenticator: new IamAuthenticator({
+  //     apikey: 's2Qf7hjRvhtqia96Z-xuXmTnU66yj5In4wuW2KiUbAsl',
+  //   }),
+  //   url: 'https://stream.watsonplatform.net/text-to-speech/api',
+  // });
+  const textToSpeech = new TextToSpeechV2({
+    iam_apikey: 's2Qf7hjRvhtqia96Z-xuXmTnU66yj5In4wuW2KiUbAsl',
+    url: 'https://stream.watsonplatform.net/text-to-speech/api',
+  });
+
+  const synthesizeParams = {
+    text: texto,
+    voice: 'pt-BR_IsabelaVoice',
+    accept: 'audio/ogg; codecs=opus' // default is audio/ogg; codec=opus
+  };
+  fileName = `audio/result-${Math.floor(Date.now() / 1000)}.ogg`;
+
+
+  return await textToSpeech.synthesize(synthesizeParams)
+  .then(async res => {
+    return await res.pipe(fs.createWriteStream(fileName));
+  });
+
+}
+
+function newFunction(res) {
+  NodeJS.Read;
+  let buf = new Buffer.from(res);
+  // let teste = res.pipe();
+  console.log(buf);
 }

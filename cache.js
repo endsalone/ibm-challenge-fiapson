@@ -13,6 +13,8 @@ exports.get = async function (key) {
 		}
 		
 		let session = await chat.createSession();
+		//Inicia a primeira interação com o Bot
+		await chat.send("oi", session)
 		cache = c.put(key, session);
 		resolve(c.get(key));
 

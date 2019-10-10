@@ -6,7 +6,7 @@ const chat = require("./chat");
 const cache = require("./cache");
 const fs = require('fs');
 const fileUpload = require('express-fileupload');
-
+getStat = require('util').promisify(fs.stat);
 
 console.clear();
 
@@ -59,8 +59,6 @@ app.get('/', (req, res) => {
 
 app.post('/audio', async function (req, res) {
 
-
-
 	if (typeof req.body.phone == "undefined") {
 		req.body.phone = null;
 	}
@@ -71,11 +69,10 @@ app.post('/audio', async function (req, res) {
 		req.body.channel = "web";
 	}
 
+	let msg = (req.files === null) ? req.body.msg : await chat.s2t(req.files.audio);
 
-	let msg = (req.files === null)? req.body.msg : await chat.s2t(req.files.audio);
-
-	if(typeof msg === "undefined")
-		return res.json({error: "Mensagem / Audio não encontrado. Envie e tente novamente!"});
+	if (typeof msg === "undefined")
+		return res.json({ error: "Mensagem / Audio não encontrado. Envie e tente novamente!" });
 
 	let from = req.body.from;
 	let to = req.body.to;
@@ -90,26 +87,86 @@ app.post('/audio', async function (req, res) {
 	//Coletar texto do Watson
 	let r = await chat.message(msg, c)
 
-	return res.json({
+	//Transformar texto em audio
+	let arquivo = await chat.t2s(r.msg)//r.msg)
+
+	//Coletar caminho do arquivo
+	let path = arquivo.path
+
+	//Json de resposta
+	let response = {
 		msg: r.msg,
+		audio: null,
 		sessao: r.sessao,
 		intencao: r.intencao,
 		origin: from,
 		phone: to,
 		channel: channel
-	})
-	return res.json(resposta);
+	};
+	//Aguardar aquivo ser criado
+	await arquivo.on('finish', async function (a) {
+
+		const filePath = path;
+    const stat = await getStat(filePath);
+    
+    
+    // informações sobre o tipo do conteúdo e o tamanho do arquivo
+    res.writeHead(200, {
+        'Content-Type': 'audio/ogg',
+        'Content-Length': stat.size
+    });
+
+    const stream = fs.createReadStream(filePath);
+
+    // só exibe quando terminar de enviar tudo
+    stream.on('end', () => fs.unlinkSync(path));
+
+    // faz streaming do audio 
+    stream.pipe(res);
+
+		//Coletar Buffer do Arquivo e armazenar no json
+		//response.audio = path;//fs.readFileSync(path);
+
+		//Deletar arquivo criado para não ocupar espaço
+		// fs.unlinkSync(path);
+		//return res.json(response);
+	});
 });
 
 app.post('/test', async function (req, res) {
 	file = req.files;
 	console.log('body', req.body)
 	console.log('file', file)
-	res.end(file);
+	res.json(req.body);
+});
+
+app.post('/text2speech', async function (req, res) {
+	let resposta = chat.t2s("Bom dia")
+	res.end("resposta");
+})
+
+app.get('/audio/:arquivo', async function (req, res) {
+	let path = `audio/${req.params.arquivo}`;
+	let stat = await getStat(path);
+
+	res.writeHead(200, {
+		'Content-Type': 'audio/ogg',
+		'Content-Length': stat.size
+	});
+
+	const stream = fs.createReadStream(path);
+
+	// só exibe quando terminar de enviar tudo
+	stream.on('end', () => console.log('acabou'));
+
+	// faz streaming do audio 
+	stream.pipe(res);
+	// res.end(path);
 });
 
 var port = process.env.PORT || 3000;
 
 app.listen(3000, async () => {
+	// chat.t2s("Bom dia");
 	console.log("server is running");
 });
