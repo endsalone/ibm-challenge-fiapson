@@ -6,11 +6,14 @@ const chat = require("./chat");
 const cache = require("./cache");
 const fs = require('fs');
 const fileUpload = require('express-fileupload');
+const cors = require('cors')
+
 getStat = require('util').promisify(fs.stat);
 
 console.clear();
 
 app.use(bodyParser.json());
+app.use(cors());
 
 app.use(fileUpload({
 	useTempFiles: false,
@@ -56,6 +59,7 @@ app.post('/msg', async function (req, res) {
 app.get('/', (req, res) => {
 	return res.json("OK");
 })
+
 
 app.post('/audio', async function (req, res) {
 

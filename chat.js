@@ -60,7 +60,8 @@ exports.audio = async (audio) => {
 
   // return "req.body";
   const config = {
-    "apikey": "EF9GMHwCHjMJqbQXhMpN4Vl_NUqVmJ0mwiZQXIc2uR-Y",
+    "apikey": "bL140DnTUZAM6xuym0ERZrzOnW9zC3BNMMLMXT0hixij",
+    "acousticCustomizationId": "5be7a6a4-6bc8-4331-9c39-2d81423957cc",
     "iam_apikey_description": "Auto-generated for key 26a24639-d405-477f-8287-169ee22adcd9",
     "iam_apikey_name": "Auto-generated service credentials",
     "iam_role_crn": "crn:v1:bluemix:public:iam::::serviceRole:Manager",
@@ -72,6 +73,7 @@ exports.audio = async (audio) => {
   let speechToText = new speech2text({
     authenticator: new IamAuthenticator({
       apikey: config.apikey,
+      acousticCustomizationId: config.acousticCustomizationId,
     }),
     url: config.url,
     disable_ssl_verification: true,
