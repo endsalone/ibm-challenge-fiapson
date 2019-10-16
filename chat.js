@@ -120,7 +120,7 @@ exports.t2s = async (texto) => {
   //   url: 'https://stream.watsonplatform.net/text-to-speech/api',
   // });
   const textToSpeech = new TextToSpeechV2({
-    iam_apikey: 's2Qf7hjRvhtqia96Z-xuXmTnU66yj5In4wuW2KiUbAsl',
+    iam_apikey: 'XrDQBkXgktxo9dD41pZCuyt_9kixBSckxDEtfoCr4-CE',
     url: 'https://stream.watsonplatform.net/text-to-speech/api',
   });
 
