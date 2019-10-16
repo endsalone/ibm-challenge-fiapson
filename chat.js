@@ -79,9 +79,10 @@ exports.audio = async (audio) => {
     disable_ssl_verification: true,
   });
   // return console.log(audio)
+  // console.log(audio)
   let params = {
     audio: audio.data,
-    contentType: 'audio/ogg',
+    contentType: audio.mimetype, //'audio/ogg',
     wordAlternativesThreshold: 0.9,
     keywords: ['colorado', 'tornado', 'tornadoes'],
     keywordsThreshold: 0.5,
@@ -107,7 +108,7 @@ exports.s2t = async (audio) => {
   console.log('Audio: ', JSON.stringify(dados.result))
   if (typeof dados === "undefined" || (dados.result).length == 0)
     return "Não entendi"
-
+  console.log(dados)
   return dados.result.results[0].alternatives[0].transcript
 }
 
@@ -130,7 +131,6 @@ exports.t2s = async (texto) => {
   };
   fileName = `audio/result-${Math.floor(Date.now() / 1000)}.ogg`;
 
-
   return await textToSpeech.synthesize(synthesizeParams)
   .then(async res => {
     return await res.pipe(fs.createWriteStream(fileName));
@@ -138,9 +138,9 @@ exports.t2s = async (texto) => {
 
 }
 
-function newFunction(res) {
-  NodeJS.Read;
-  let buf = new Buffer.from(res);
-  // let teste = res.pipe();
-  console.log(buf);
-}
+// function newFunction(res) {
+//   NodeJS.Read;
+//   let buf = new Buffer.from(res);
+//   // let teste = res.pipe();
+//   // console.log(buf);
+// }

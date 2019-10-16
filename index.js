@@ -90,7 +90,9 @@ app.post('/audio', async function (req, res) {
 
 	//Coletar texto do Watson
 	let r = await chat.message(msg, c)
-
+	
+	console.log(r);
+	
 	//Transformar texto em audio
 	let arquivo = await chat.t2s(r.msg)//r.msg)
 
@@ -168,9 +170,9 @@ app.get('/audio/:arquivo', async function (req, res) {
 	// res.end(path);
 });
 
-var port = process.env.PORT || 3000;
+var port = process.env.PORT || 3002;
 
-app.listen(3000, async () => {
+app.listen(port, async () => {
 	// chat.t2s("Bom dia");
 	console.log("server is running");
 });
