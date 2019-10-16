@@ -91,7 +91,7 @@ app.post('/audio', async function (req, res) {
 	//Coletar texto do Watson
 	let r = await chat.message(msg, c)
 	
-	console.log(r);
+	console.log('mensagem ouvida: ', r);
 	
 	//Transformar texto em audio
 	let arquivo = await chat.t2s(r.msg)//r.msg)

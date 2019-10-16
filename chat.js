@@ -106,10 +106,10 @@ exports.audio = async (audio) => {
 exports.s2t = async (audio) => {
   let dados = await this.audio(audio);
   console.log('Audio: ', JSON.stringify(dados.result))
-  if (typeof dados === "undefined" || (dados.result).length == 0)
+  if (typeof dados === "undefined" || (dados.result.results).length == 0)
     return "Não entendi"
-  console.log(dados)
-  return dados.result.results[0].alternatives[0].transcript
+
+  return ((dados.result.results).length > 0)? dados.result.results[0].alternatives[0].transcript : 'Bla bla bla';
 }
 
 exports.t2s = async (texto) => {
